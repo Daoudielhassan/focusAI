@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">focus AI</string>
+    
+    <!-- Welcome Activity -->
+    <string name="welcome_mindful_ai">MINDFUL AI</string>
+    <string name="welcome_title_part1">A calm space to</string>
+    <string name="welcome_title_part2">focus better.</string>
+    <string name="welcome_subtitle">Grow your digital garden while you work, study, or simply breathe.</string>
+    <string name="welcome_btn_commencer">Commencer</string>
+    <string name="welcome_login_prompt">Déjà un compte? Connexion</string>
+
+    <!-- Autorisations Activity -->
+    <string name="auth_title_part1">Calibrons votre</string>
+    <string name="auth_title_part2">expérience</string>
+    <string name="auth_description">Pour vous aider à rester concentré, l\'IA a besoin de quelques accès. Vous restez maître de vos choix à tout moment.</string>
+    <string name="auth_mode_focus">MODE FOCUS</string>
+    <string name="auth_notif_title">Notifications Zen</string>
+    <string name="auth_notif_desc">Soyez alerté doucement à la fin de votre session.</string>
+    <string name="auth_music_title">Ambiance Sonore</string>
+    <string name="auth_music_desc">Pour générer des paysages sonores adaptatifs.</string>
+    <string name="auth_footer_note">Toutes les permissions sont optionnelles. Nous ne collectons aucune donnée personnelle sans votre accord.</string>
+    <string name="auth_btn_continuer">Entrer dans l\'espace focus</string>
+
+    <!-- Home Activity -->
+    <string name="home_focus_ready">FOCUS READY</string>
+    <string name="home_title">Good moment for a\nshort focus session.</string>
+    <string name="home_duration_15">15 min</string>
+    <string name="home_duration_30">30 min</string>
+    <string name="home_duration_60">60 min</string>
+    <string name="home_btn_commencer">Commencer une session</string>
+</resources>

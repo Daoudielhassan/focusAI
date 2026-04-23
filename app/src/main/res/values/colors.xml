@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="primary">#13ec5b</color>
+    <color name="primary_hover">#0fdc53</color>
+    <color name="background_light">#f6f8f6</color>
+    <color name="background_dark">#102216</color>
+    <color name="surface_dark">#1c2e21</color>
+    <color name="surface_dark_hover">#253a2b</color>
+    <color name="text_primary_dark">#FFFFFFFF</color>
+    <color name="text_secondary_dark">#9db9a6</color>
+    <color name="transparent">#00000000</color>
+    <color name="white_10">#1AFFFFFF</color>
+    <color name="white_5">#0DFFFFFF</color>
+    <color name="primary_20">#3313ec5b</color>
+</resources>
