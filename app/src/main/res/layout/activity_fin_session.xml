@@ -1,179 +1,317 @@
-<?xml version="1.0" encoding="utf-8"?>
-<PLACEHOLDER_REPLACED />
+﻿<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_dark"
+    tools:context=".ui.session.FinSessionActivity">
 
-    <!-- Ambient Glow / Background Gradient -->
+    <!-- ════ BACKGROUND GLOW LAYERS ════════════════════════════════ -->
+
     <View
-        android:layout_width="400dp"
-        android:layout_height="400dp"
+        android:layout_width="500dp"
+        android:layout_height="500dp"
+        android:alpha="0.4"
         android:background="@drawable/bg_ambient_glow"
-        android:alpha="0.6"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintVertical_bias="0.0" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp"
-        android:gravity="center"
-        app:layout_constraintTop_toTopOf="parent"
+    <View
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:alpha="0.12"
+        android:background="@drawable/bg_ambient_glow"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.95" />
 
-        <!-- Header / Success Message -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Well done 🌱"
-            android:textColor="@color/primary"
-            android:textSize="40sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:shadowColor="#6613EC5B"
-            android:shadowDx="0"
-            android:shadowDy="0"
-            android:shadowRadius="15" />
+    <!-- ════ SCROLLABLE CONTENT ════════════════════════════════════ -->
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="8dp">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingBottom="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@android:drawable/ic_menu_recent_history"
-                app:tint="@color/primary"
-                android:layout_marginEnd="8dp"/>
-
-            <TextView
-                android:id="@+id/tv_session_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="+45 minutes focus"
-                android:textColor="@color/text_secondary_dark"
-                android:textSize="18sp" />
-        </LinearLayout>
-
-        <!-- Feedback Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:background="@drawable/bg_surface_dark_rounded"
-            android:padding="24dp"
-            android:gravity="center"
-            android:layout_marginTop="48dp"
-            android:elevation="8dp">
+            android:paddingHorizontal="24dp"
+            android:paddingTop="72dp">
 
+            <!-- ── Status pill ──────────────────────────────────── -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="How did it feel?"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:layout_marginBottom="24dp" />
+                android:background="@drawable/bg_pill_primary"
+                android:letterSpacing="0.12"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="7dp"
+                android:text="⚡  SESSION TERMINÉE"
+                android:textColor="@color/primary"
+                android:textSize="10sp"
+                android:textStyle="bold" />
 
+            <!-- ── Success orb icon ────────────────────────────── -->
+            <FrameLayout
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="28dp">
+
+                <!-- Outer glow -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:alpha="0.35"
+                    android:background="@drawable/bg_success_glow" />
+
+                <!-- Main circle -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="92dp"
+                    android:layout_height="92dp"
+                    android:layout_gravity="center"
+                    app:cardCornerRadius="46dp"
+                    app:cardElevation="18dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#3313EC5B"
+                    app:cardBackgroundColor="#1413EC5B">
+
+                    <ImageView
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@null"
+                        android:src="@android:drawable/ic_menu_compass"
+                        app:tint="@color/primary" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </FrameLayout>
+
+            <!-- ── Duration big display ─────────────────────────── -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="bottom"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:layout_marginTop="4dp">
 
-                <!-- Reaction Button 1 -->
-                <FrameLayout
-                    android:id="@+id/btn_emoji_1"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:background="@drawable/bg_emoji_unselected"
-                    android:clickable="true"
-                    android:focusable="true">
+                <TextView
+                    android:id="@+id/tv_session_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:shadowColor="#5513EC5B"
+                    android:shadowDx="0"
+                    android:shadowDy="0"
+                    android:shadowRadius="24"
+                    android:text="45"
+                    android:textColor="@color/primary"
+                    android:textSize="72sp"
+                    android:textStyle="bold"
+                    tools:text="45" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="bottom"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="14dp">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="😣"
-                        android:textSize="36sp" />
-                </FrameLayout>
+                        android:text="min"
+                        android:textColor="@color/text_secondary_dark"
+                        android:textSize="22sp" />
 
-                <Space
-                    android:layout_width="16dp"
-                    android:layout_height="wrap_content" />
-
-                <!-- Reaction Button 2 -->
-                <FrameLayout
-                    android:id="@+id/btn_emoji_2"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:background="@drawable/bg_emoji_unselected"
-                    android:clickable="true"
-                    android:focusable="true">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="🙂"
-                        android:textSize="36sp" />
-                </FrameLayout>
-
-                <Space
-                    android:layout_width="16dp"
-                    android:layout_height="wrap_content" />
-
-                <!-- Reaction Button 3 -->
-                <FrameLayout
-                    android:id="@+id/btn_emoji_3"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:background="@drawable/bg_emoji_unselected"
-                    android:clickable="true"
-                    android:focusable="true">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="😌"
-                        android:textSize="36sp" />
-                </FrameLayout>
+                        android:text="de focus"
+                        android:textColor="@color/text_secondary_dark"
+                        android:textSize="13sp" />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 
-        <!-- Actions -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="48dp">
+            <!-- ── Mood card ────────────────────────────────────── -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="36dp"
+                app:cardBackgroundColor="@color/glass_surface"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/glass_stroke"
+                app:strokeWidth="1dp">
 
-            <Button
-                android:id="@+id/btn_insights"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_btn_secondary"
-                android:text="VOIR INSIGHTS"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginEnd="16dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="28dp">
 
-            <Button
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:letterSpacing="0.12"
+                        android:text="COMMENT ÉTAIT-CE ?"
+                        android:textColor="@color/text_secondary_dark"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Votre ressenti aide Lumina à améliorer vos recommandations"
+                        android:textColor="@color/text_secondary_dark"
+                        android:textSize="11sp"
+                        android:gravity="center"
+                        android:lineSpacingExtra="2dp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="24dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center">
+                            <FrameLayout
+                                android:id="@+id/btn_emoji_1"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                android:background="@drawable/bg_emoji_unselected"
+                                android:clickable="true"
+                                android:focusable="true">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="😣"
+                                    android:textSize="34sp" />
+                            </FrameLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Difficile"
+                                android:textColor="@color/text_secondary_dark"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                        <Space android:layout_width="20dp" android:layout_height="1dp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center">
+                            <FrameLayout
+                                android:id="@+id/btn_emoji_2"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                android:background="@drawable/bg_emoji_unselected"
+                                android:clickable="true"
+                                android:focusable="true">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="🙂"
+                                    android:textSize="34sp" />
+                            </FrameLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Bien"
+                                android:textColor="@color/text_secondary_dark"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                        <Space android:layout_width="20dp" android:layout_height="1dp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center">
+                            <FrameLayout
+                                android:id="@+id/btn_emoji_3"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                android:background="@drawable/bg_emoji_unselected"
+                                android:clickable="true"
+                                android:focusable="true">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="😌"
+                                    android:textSize="34sp" />
+                            </FrameLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Excellent"
+                                android:textColor="@color/text_secondary_dark"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ── Actions ──────────────────────────────────────── -->
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_home"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="24dp"
                 android:background="@drawable/bg_primary_button"
-                android:text="HOME"
+                android:letterSpacing="0.02"
+                android:text="🏠  Retour à l'accueil"
+                android:textAllCaps="false"
                 android:textColor="@color/background_dark"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                app:cornerRadius="22dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_insights"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                android:letterSpacing="0.02"
+                android:text="📊  Voir les statistiques"
+                android:textAllCaps="false"
+                android:textColor="@color/primary"
+                android:textSize="15sp"
+                app:backgroundTint="@android:color/transparent"
+                app:cornerRadius="22dp"
+                app:strokeColor="@color/glass_stroke"
+                app:strokeWidth="1dp" />
+
         </LinearLayout>
-    </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
