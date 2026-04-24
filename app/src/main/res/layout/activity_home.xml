@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/homeRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_dark"
@@ -9,8 +11,9 @@
 
     <!-- === BACKGROUND GLOW LAYERS === -->
     <View
-        android:layout_width="350dp"
-        android:layout_height="350dp"
+        android:id="@+id/glowTop"
+        android:layout_width="360dp"
+        android:layout_height="360dp"
         android:alpha="0.18"
         android:background="@drawable/bg_ambient_glow"
         app:layout_constraintEnd_toEndOf="parent"
@@ -18,8 +21,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:id="@+id/glowRight"
+        android:layout_width="260dp"
+        android:layout_height="260dp"
         android:alpha="0.08"
         android:background="@drawable/bg_ambient_glow"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -27,27 +31,34 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- === SCROLL CONTENT === -->
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/homeScroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
+        android:fillViewport="true"
         android:overScrollMode="never"
-        android:paddingBottom="120dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavContainer"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
+            android:id="@+id/homeContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingStart="20dp"
+            android:paddingTop="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="24dp">
 
             <!-- === TOP BAR === -->
             <LinearLayout
+                android:id="@+id/topBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:layout_marginTop="12dp">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -56,6 +67,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tv_greeting_small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Bonjour 👋"
@@ -66,22 +78,25 @@
                         android:id="@+id/tv_greeting_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
                         android:text="Prêt à vous concentrer ?"
                         android:textColor="@color/white"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:layout_marginTop="2dp" />
+                        android:textSize="21sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <!-- Streak Badge -->
                 <LinearLayout
+                    android:id="@+id/streakBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_streak_badge"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingHorizontal="14dp"
-                    android:paddingVertical="8dp">
+                    android:paddingStart="14dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="14dp"
+                    android:paddingBottom="8dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -92,8 +107,8 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="6dp">
+                        android:layout_marginStart="6dp"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tv_streak_count"
@@ -115,195 +130,219 @@
             </LinearLayout>
 
             <!-- === HERO ORB SECTION === -->
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardHero"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_bento_card_glow"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="28dp"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="22dp"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardCornerRadius="32dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/glass_stroke"
+                app:strokeWidth="1dp">
 
-                <!-- Label animé -->
-                <TextView
-                    android:id="@+id/tv_status_label"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_pill_primary"
-                    android:letterSpacing="0.15"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="6dp"
-                    android:text="⚡  LUMINA ACTIVE"
-                    android:textColor="@color/primary"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
+                    android:background="@drawable/bg_bento_card_glow"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="28dp">
 
-                <!-- ORB avec progress circulaire -->
-                <FrameLayout
-                    android:layout_width="240dp"
-                    android:layout_height="240dp"
-                    android:layout_marginTop="24dp">
+                    <TextView
+                        android:id="@+id/tv_status_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_pill_primary"
+                        android:letterSpacing="0.15"
+                        android:paddingStart="16dp"
+                        android:paddingTop="6dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="6dp"
+                        android:text="⚡  LUMINA ACTIVE"
+                        android:textColor="@color/primary"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
 
-                    <!-- Pulsing outer ring -->
-                    <View
-                        android:id="@+id/view_orb_ring_outer"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/bg_orb_pulse"
-                        android:layout_gravity="center" />
-
-                    <!-- Inner ring -->
-                    <View
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
-                        android:background="@drawable/bg_orb_ring"
-                        android:layout_gravity="center"
-                        android:alpha="0.3" />
-
-                    <!-- Main Orb -->
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/card_orb"
-                        android:layout_width="160dp"
-                        android:layout_height="160dp"
-                        android:layout_gravity="center"
-                        app:cardCornerRadius="80dp"
-                        app:cardElevation="32dp"
-                        app:cardBackgroundColor="@color/surface_dark">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="centerCrop"
-                            android:background="@drawable/bg_image_placeholder"
-                            android:contentDescription="@null" />
+                    <FrameLayout
+                        android:id="@+id/orbContainer"
+                        android:layout_width="240dp"
+                        android:layout_height="240dp"
+                        android:layout_marginTop="24dp">
 
                         <View
+                            android:id="@+id/view_orb_ring_outer"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/bg_image_overlay" />
-
-                        <!-- Center icon -->
-                        <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
                             android:layout_gravity="center"
-                            android:src="@android:drawable/ic_menu_recent_history"
-                            android:contentDescription="@null"
-                            app:tint="@color/primary"
-                            android:alpha="0.8" />
-                    </androidx.cardview.widget.CardView>
-                </FrameLayout>
+                            android:background="@drawable/bg_orb_pulse" />
 
-                <!-- Quote sous l'orbe -->
-                <TextView
-                    android:id="@+id/tv_quote"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:gravity="center"
-                    android:text="&quot;La concentration est la racine de toute réussite.&quot;"
-                    android:textColor="@color/text_secondary_dark"
-                    android:textSize="12sp"
-                    android:fontFamily="sans-serif-light" />
-            </LinearLayout>
+                        <View
+                            android:id="@+id/view_orb_ring_inner"
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:layout_gravity="center"
+                            android:alpha="0.3"
+                            android:background="@drawable/bg_orb_ring" />
 
-            <!-- === BENTO GRID ROW 1 : Durée + Aujourd'hui === -->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/card_orb"
+                            android:layout_width="160dp"
+                            android:layout_height="160dp"
+                            android:layout_gravity="center"
+                            app:cardBackgroundColor="@color/surface_dark"
+                            app:cardCornerRadius="80dp"
+                            app:cardElevation="28dp">
+
+                            <ImageView
+                                android:id="@+id/img_orb_background"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_image_placeholder"
+                                android:contentDescription="@null"
+                                android:scaleType="centerCrop" />
+
+                            <View
+                                android:id="@+id/orbOverlay"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_image_overlay" />
+
+                            <ImageView
+                                android:id="@+id/img_orb_icon"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:layout_gravity="center"
+                                android:alpha="0.85"
+                                android:contentDescription="@null"
+                                android:src="@android:drawable/ic_menu_recent_history"
+                                app:tint="@color/primary" />
+                        </androidx.cardview.widget.CardView>
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/tv_quote"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:fontFamily="sans-serif-light"
+                        android:gravity="center"
+                        android:text="&quot;La concentration est la racine de toute réussite.&quot;"
+                        android:textColor="@color/text_secondary_dark"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- === BENTO GRID ROW 1 === -->
             <LinearLayout
+                android:id="@+id/bentoRowOne"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
 
-                <!-- Carte durée -->
-                <LinearLayout
+                <!-- Duration Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardDuration"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_bento_card"
-                    android:orientation="vertical"
-                    android:padding="20dp"
-                    android:layout_marginEnd="8dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="⏱  DURÉE"
-                        android:textColor="@color/text_secondary_dark"
-                        android:textSize="10sp"
-                        android:letterSpacing="0.1"
-                        android:textStyle="bold" />
-
-                    <!-- Duration chips verticaux -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginTop="14dp">
-
-                        <TextView
-                            android:id="@+id/tv_duration_15"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:gravity="center"
-                            android:text="15 min"
-                            android:textColor="@color/text_secondary_dark"
-                            android:textSize="13sp"
-                            android:background="@drawable/bg_duration_chip_inactive"
-                            android:layout_marginBottom="8dp" />
-
-                        <TextView
-                            android:id="@+id/tv_duration_30"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:gravity="center"
-                            android:text="30 min"
-                            android:textColor="@color/background_dark"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            android:background="@drawable/bg_duration_chip_active"
-                            android:layout_marginBottom="8dp" />
-
-                        <TextView
-                            android:id="@+id/tv_duration_60"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:gravity="center"
-                            android:text="60 min"
-                            android:textColor="@color/text_secondary_dark"
-                            android:textSize="13sp"
-                            android:background="@drawable/bg_duration_chip_inactive" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- Carte Stats du jour -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_bento_card"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/glass_surface"
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/glass_stroke"
+                    app:strokeWidth="1dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="📊  AUJOURD'HUI"
-                        android:textColor="@color/text_secondary_dark"
-                        android:textSize="10sp"
-                        android:letterSpacing="0.1"
-                        android:textStyle="bold" />
-
-                    <!-- Stat 1 -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:layout_marginTop="16dp">
+                        android:padding="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:letterSpacing="0.1"
+                            android:text="⏱  DURÉE"
+                            android:textColor="@color/text_secondary_dark"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="14dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_duration_15"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_marginBottom="8dp"
+                                android:background="@drawable/bg_duration_chip_inactive"
+                                android:gravity="center"
+                                android:text="15 min"
+                                android:textColor="@color/text_secondary_dark"
+                                android:textSize="13sp" />
+
+                            <TextView
+                                android:id="@+id/tv_duration_30"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_marginBottom="8dp"
+                                android:background="@drawable/bg_duration_chip_active"
+                                android:gravity="center"
+                                android:text="30 min"
+                                android:textColor="@color/background_dark"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv_duration_60"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:background="@drawable/bg_duration_chip_inactive"
+                                android:gravity="center"
+                                android:text="60 min"
+                                android:textColor="@color/text_secondary_dark"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Today Stats Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardToday"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/glass_surface"
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/glass_stroke"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:letterSpacing="0.1"
+                            android:text="📊  AUJOURD'HUI"
+                            android:textColor="@color/text_secondary_dark"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tv_today_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
                             android:text="0h 00"
                             android:textColor="@color/primary"
                             android:textSize="28sp"
@@ -315,19 +354,13 @@
                             android:text="focus total"
                             android:textColor="@color/text_secondary_dark"
                             android:textSize="11sp" />
-                    </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#1A13ec5b"
-                        android:layout_marginVertical="14dp" />
-
-                    <!-- Stat 2 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="14dp"
+                            android:layout_marginBottom="14dp"
+                            android:background="#1A13EC5B" />
 
                         <TextView
                             android:id="@+id/tv_today_sessions"
@@ -345,140 +378,190 @@
                             android:textColor="@color/text_secondary_dark"
                             android:textSize="11sp" />
                     </LinearLayout>
-                </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-            <!-- === BENTO ROW 2 : Mode focus + Ambiance === -->
+            <!-- === BENTO GRID ROW 2 === -->
             <LinearLayout
+                android:id="@+id/bentoRowTwo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
 
-                <!-- Carte Ambiance -->
-                <LinearLayout
+                <!-- Ambiance Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardAmbiance"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_bento_card"
-                    android:orientation="vertical"
-                    android:padding="20dp"
-                    android:layout_marginEnd="8dp">
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/glass_surface"
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/glass_stroke"
+                    app:strokeWidth="1dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🎵  AMBIANCE"
-                        android:textColor="@color/text_secondary_dark"
-                        android:textSize="10sp"
-                        android:letterSpacing="0.1"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_ambiance_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="Nightwave Plaza"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Radio Lofi · En direct"
-                        android:textColor="@color/primary"
-                        android:textSize="11sp"
-                        android:layout_marginTop="4dp" />
-
-                    <!-- Equalizer dots -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="24dp"
-                        android:orientation="horizontal"
-                        android:gravity="bottom"
-                        android:layout_marginTop="14dp">
-
-                        <View android:id="@+id/eq_bar_1"
-                            android:layout_width="4dp" android:layout_height="8dp"
-                            android:background="@color/primary" android:layout_marginEnd="4dp" android:alpha="0.9"/>
-                        <View android:id="@+id/eq_bar_2"
-                            android:layout_width="4dp" android:layout_height="18dp"
-                            android:background="@color/primary" android:layout_marginEnd="4dp" android:alpha="0.7"/>
-                        <View android:id="@+id/eq_bar_3"
-                            android:layout_width="4dp" android:layout_height="12dp"
-                            android:background="@color/primary" android:layout_marginEnd="4dp" android:alpha="0.9"/>
-                        <View android:id="@+id/eq_bar_4"
-                            android:layout_width="4dp" android:layout_height="22dp"
-                            android:background="@color/primary" android:layout_marginEnd="4dp" android:alpha="0.6"/>
-                        <View android:id="@+id/eq_bar_5"
-                            android:layout_width="4dp" android:layout_height="10dp"
-                            android:background="@color/primary" android:alpha="0.8"/>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- Carte Conseil IA -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_bento_card"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="✨  LUMINA"
-                        android:textColor="@color/text_secondary_dark"
-                        android:textSize="10sp"
-                        android:letterSpacing="0.1"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_ai_tip"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="Votre pic de concentration est généralement le matin. Commencez maintenant !"
-                        android:textColor="@color/white"
-                        android:textSize="12sp"
-                        android:lineSpacingExtra="4dp" />
+                        android:orientation="vertical"
+                        android:padding="20dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:letterSpacing="0.1"
+                            android:text="🎵  AMBIANCE"
+                            android:textColor="@color/text_secondary_dark"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_ambiance_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:text="Nightwave Plaza"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Radio Lofi · En direct"
+                            android:textColor="@color/primary"
+                            android:textSize="11sp" />
+
+                        <LinearLayout
+                            android:id="@+id/equalizerBars"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:layout_marginTop="14dp"
+                            android:gravity="bottom"
+                            android:orientation="horizontal">
+
+                            <View
+                                android:id="@+id/eq_bar_1"
+                                android:layout_width="4dp"
+                                android:layout_height="8dp"
+                                android:layout_marginEnd="4dp"
+                                android:alpha="0.9"
+                                android:background="@color/primary" />
+
+                            <View
+                                android:id="@+id/eq_bar_2"
+                                android:layout_width="4dp"
+                                android:layout_height="18dp"
+                                android:layout_marginEnd="4dp"
+                                android:alpha="0.7"
+                                android:background="@color/primary" />
+
+                            <View
+                                android:id="@+id/eq_bar_3"
+                                android:layout_width="4dp"
+                                android:layout_height="12dp"
+                                android:layout_marginEnd="4dp"
+                                android:alpha="0.9"
+                                android:background="@color/primary" />
+
+                            <View
+                                android:id="@+id/eq_bar_4"
+                                android:layout_width="4dp"
+                                android:layout_height="22dp"
+                                android:layout_marginEnd="4dp"
+                                android:alpha="0.6"
+                                android:background="@color/primary" />
+
+                            <View
+                                android:id="@+id/eq_bar_5"
+                                android:layout_width="4dp"
+                                android:layout_height="10dp"
+                                android:alpha="0.8"
+                                android:background="@color/primary" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Lumina Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardLumina"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/glass_surface"
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/glass_stroke"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:background="@drawable/bg_pill_primary"
-                        android:paddingHorizontal="10dp"
-                        android:paddingVertical="4dp"
-                        android:text="Insight IA"
-                        android:textColor="@color/primary"
-                        android:textSize="9sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:letterSpacing="0.1"
+                            android:text="✨  LUMINA"
+                            android:textColor="@color/text_secondary_dark"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_ai_tip"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:lineSpacingExtra="4dp"
+                            android:text="Votre pic de concentration est généralement le matin. Commencez maintenant !"
+                            android:textColor="@color/white"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tv_ai_badge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:background="@drawable/bg_pill_primary"
+                            android:paddingStart="10dp"
+                            android:paddingTop="4dp"
+                            android:paddingEnd="10dp"
+                            android:paddingBottom="4dp"
+                            android:text="Insight IA"
+                            android:textColor="@color/primary"
+                            android:textSize="9sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
             <!-- === CTA BUTTON === -->
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_commencer"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/bg_primary_button"
+                android:letterSpacing="0.02"
                 android:text="⚡  Démarrer la session"
+                android:textAllCaps="false"
                 android:textColor="@color/background_dark"
                 android:textSize="17sp"
                 android:textStyle="bold"
-                android:textAllCaps="false"
-                android:letterSpacing="0.02" />
+                app:backgroundTint="@null"
+                app:cornerRadius="22dp" />
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <!-- === BOTTOM NAV === -->
     <include
+        android:id="@+id/bottomNavContainer"
         layout="@layout/layout_bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

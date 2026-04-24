@@ -159,51 +159,11 @@
                         android:paddingVertical="4dp" />
                 </LinearLayout>
 
-                <!-- Custom Bar Chart using Weights -->
-                <LinearLayout
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/bar_chart"
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="16dp"
-                    android:gravity="bottom"
-                    android:weightSum="7">
-
-                    <!-- Day 1 -->
-                    <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                        <View android:id="@+id/bar_1" android:layout_width="16dp" android:layout_height="48dp" android:background="@drawable/bg_chart_bar_inactive" />
-                        <TextView android:id="@+id/tv_day_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="M" android:textColor="@color/text_secondary_dark" android:textSize="12sp" android:layout_marginTop="8dp"/>
-                    </LinearLayout>
-                    <!-- Day 2 -->
-                    <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                        <View android:id="@+id/bar_2" android:layout_width="16dp" android:layout_height="72dp" android:background="@drawable/bg_chart_bar_inactive" />
-                        <TextView android:id="@+id/tv_day_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="T" android:textColor="@color/text_secondary_dark" android:textSize="12sp" android:layout_marginTop="8dp"/>
-                    </LinearLayout>
-                    <!-- Day 3 -->
-                    <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                        <View android:id="@+id/bar_3" android:layout_width="16dp" android:layout_height="36dp" android:background="@drawable/bg_chart_bar_inactive" />
-                        <TextView android:id="@+id/tv_day_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="W" android:textColor="@color/text_secondary_dark" android:textSize="12sp" android:layout_marginTop="8dp"/>
-                    </LinearLayout>
-                    <!-- Day 4 -->
-                    <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                        <View android:id="@+id/bar_4" android:layout_width="16dp" android:layout_height="100dp" android:background="@drawable/bg_chart_bar_active" />
-                        <TextView android:id="@+id/tv_day_4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="T" android:textColor="@color/primary" android:textSize="12sp" android:textStyle="bold" android:layout_marginTop="8dp"/>
-                    </LinearLayout>
-                    <!-- Day 5 -->
-                    <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                        <View android:id="@+id/bar_5" android:layout_width="16dp" android:layout_height="60dp" android:background="@drawable/bg_chart_bar_inactive" />
-                        <TextView android:id="@+id/tv_day_5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="F" android:textColor="@color/text_secondary_dark" android:textSize="12sp" android:layout_marginTop="8dp"/>
-                    </LinearLayout>
-                    <!-- Day 6 -->
-                    <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                        <View android:id="@+id/bar_6" android:layout_width="16dp" android:layout_height="24dp" android:background="@drawable/bg_chart_bar_inactive" />
-                        <TextView android:id="@+id/tv_day_6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="S" android:textColor="@color/text_secondary_dark" android:textSize="12sp" android:layout_marginTop="8dp"/>
-                    </LinearLayout>
-                    <!-- Day 7 -->
-                    <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                        <View android:id="@+id/bar_7" android:layout_width="16dp" android:layout_height="20dp" android:background="@drawable/bg_chart_bar_inactive" />
-                        <TextView android:id="@+id/tv_day_7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="S" android:textColor="@color/text_secondary_dark" android:textSize="12sp" android:layout_marginTop="8dp"/>
-                    </LinearLayout>
-                </LinearLayout>
+                    android:layout_height="200dp"
+                    android:layout_marginTop="16dp" />
             </LinearLayout>
 
             <!-- Peak Focus Card -->

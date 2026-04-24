@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "949054959351",
+    "project_id": "focus-ai-26fe7",
+    "storage_bucket": "focus-ai-26fe7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:949054959351:android:4ea0fa7da84ee24a0d2df2",
+        "android_client_info": {
+          "package_name": "com.focus.mob"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "949054959351-51gnbue6l83n8ddvbi314dj9s9c6o0nk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.focus.mob",
+            "certificate_hash": "f5c7f3e9c6a4e19347b11b9bbc87d4810dfa5b58"
+          }
+        },
+        {
+          "client_id": "949054959351-epoe9pgd0qjguhhup3nsfko5j8an2hip.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAI3HFNAyWzypth3DPTgA1rxYk_KSCU7ao"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "949054959351-epoe9pgd0qjguhhup3nsfko5j8an2hip.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

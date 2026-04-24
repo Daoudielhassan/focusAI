@@ -21,6 +21,16 @@
     <!-- ═══════════════════════════════════
          MAIN SCROLL CONTENT
     ════════════════════════════════════ -->
+    <include
+        android:id="@+id/layout_shimmer"
+        layout="@layout/layout_insights_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
     <ScrollView
         android:id="@+id/scroll_insights"
         android:layout_width="match_parent"
@@ -28,6 +38,7 @@
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="120dp"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
