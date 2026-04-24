@@ -9,6 +9,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.focus.mob.worker.FocusReminderWorker
+import com.focus.mob.utils.NotificationHelper
 import java.util.concurrent.TimeUnit
 
 @HiltAndroidApp
@@ -19,7 +20,8 @@ class FocusApp : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
-        
+
+        NotificationHelper.createAllChannels(this)
         scheduleFocusReminder()
         
         Timber.i("FocusAI started ⚡")

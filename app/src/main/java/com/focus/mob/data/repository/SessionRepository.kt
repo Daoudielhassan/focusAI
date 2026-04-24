@@ -25,6 +25,10 @@ class SessionRepository(private val sessionDao: SessionDao) {
         return sessionDao.getLastSession()
     }
 
+    suspend fun getTodayFocusTime(startOfDay: Long): Int {
+        return sessionDao.getTodayFocusTime(startOfDay)
+    }
+
     suspend fun deleteAllSessions() {
         sessionDao.deleteAllSessions()
     }

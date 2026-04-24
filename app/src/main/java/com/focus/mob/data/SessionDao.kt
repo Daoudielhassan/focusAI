@@ -1,11 +1,4 @@
 package com.focus.mob.data
-import com.focus.mob.R
-
-import com.focus.mob.ui.auth.*
-import com.focus.mob.ui.main.*
-import com.focus.mob.ui.onboarding.*
-import com.focus.mob.ui.session.*
-import com.focus.mob.utils.*
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -25,6 +18,9 @@ interface SessionDao {
 
     @Query("SELECT * FROM sessions ORDER BY timestamp DESC LIMIT 1")
     suspend fun getLastSession(): SessionRecord?
+
+    @Query("SELECT COALESCE(SUM(durationMinutes), 0) FROM sessions WHERE timestamp >= :startOfDay")
+    suspend fun getTodayFocusTime(startOfDay: Long): Int
 
     @Query("DELETE FROM sessions")
     suspend fun deleteAllSessions()

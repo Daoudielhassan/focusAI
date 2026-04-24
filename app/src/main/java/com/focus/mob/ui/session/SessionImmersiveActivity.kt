@@ -1,33 +1,24 @@
 package com.focus.mob.ui.session
-import com.focus.mob.R
-
-import com.focus.mob.ui.auth.*
-import com.focus.mob.ui.main.*
-import com.focus.mob.ui.onboarding.*
-import com.focus.mob.ui.session.*
-import com.focus.mob.utils.*
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Intent
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
-import androidx.media3.exoplayer.ExoPlayer
+import androidx.lifecycle.repeatOnLifecycle
 import com.focus.mob.databinding.ActivitySessionImmersiveBinding
-import com.focus.mob.network.RetrofitClient
-import kotlinx.coroutines.Dispatchers
+import com.focus.mob.ui.main.HomeActivity
+import com.focus.mob.utils.fadeTransition
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.Locale
 
@@ -35,13 +26,9 @@ import java.util.Locale
 class SessionImmersiveActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySessionImmersiveBinding
-    private var countDownTimer: CountDownTimer? = null
-    private var timeLeftInMillis = 0L
-    private var originalDurationMs = 0L
-    private var isPaused = false
+    private val viewModel: SessionImmersiveViewModel by viewModels()
 
-    // ─── ExoPlayer replaces MediaPlayer ──────────────────────────
-    private var exoPlayer: ExoPlayer? = null
+    private val equalizerAnimators = mutableListOf<ObjectAnimator>()
 
     private val motivationalPhrases = listOf(
         "Restez dans la zone...",
@@ -56,97 +43,106 @@ class SessionImmersiveActivity : AppCompatActivity() {
         binding = ActivitySessionImmersiveBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        originalDurationMs = intent.getLongExtra("DURATION_MS", 25 * 60 * 1000L)
-        timeLeftInMillis = originalDurationMs
-        Timber.d("Session started: duration=${originalDurationMs}ms")
-
         setupListeners()
-        updateProgress()
+        observeUiState()
+        observeEvents()
         startBreathingAnimation()
         startGlowPulse()
         startEqualizerAnimation()
-        startTimer()
-        fetchAndPlayRadio()
         rotateMotivationalText()
     }
 
     // ═══════════════════════════════════════
-    // LISTENERS
+    // SETUP
     // ═══════════════════════════════════════
 
     private fun setupListeners() {
         binding.btnPause.setOnClickListener {
-            if (isPaused) {
-                isPaused = false
-                binding.btnPause.setImageResource(android.R.drawable.ic_media_pause)
-                startTimer()
-                startBreathingAnimation()
-                startEqualizerAnimation()
-                exoPlayer?.play()
-                Timber.d("Session resumed")
-            } else {
-                isPaused = true
-                binding.btnPause.setImageResource(android.R.drawable.ic_media_play)
-                countDownTimer?.cancel()
-                binding.orbContainer.clearAnimation()
-                stopEqualizerAnimation()
-                exoPlayer?.pause()
-                Timber.d("Session paused")
-            }
+            viewModel.togglePause()
         }
 
         binding.btnEmergency.setOnClickListener {
             it.animate().scaleX(0.85f).scaleY(0.85f).setDuration(100).withEndAction {
-                Timber.i("Session abandoned by user")
-                countDownTimer?.cancel()
-                releasePlayer()
-                startActivity(Intent(this, HomeActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                })
-                fadeTransition()
+                viewModel.abandon()
             }.start()
         }
     }
 
     // ═══════════════════════════════════════
-    // TIMER
+    // STATE OBSERVATION
     // ═══════════════════════════════════════
 
-    private fun startTimer() {
-        countDownTimer?.cancel()
-        countDownTimer = object : CountDownTimer(timeLeftInMillis, 200) {
-            override fun onTick(millisUntilFinished: Long) {
-                timeLeftInMillis = millisUntilFinished
-                updateProgress()
-            }
+    private fun observeUiState() {
+        var prevIsPaused: Boolean? = null
 
-            override fun onFinish() {
-                timeLeftInMillis = 0
-                updateProgress()
-                Timber.i("Session completed! duration=${originalDurationMs}ms")
-                releasePlayer()
-                startActivity(
-                    Intent(this@SessionImmersiveActivity, FinSessionActivity::class.java).apply {
-                        putExtra("DURATION_MS", originalDurationMs)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+
+                    // ── Timer display
+                    val m = state.remainingSeconds / 60
+                    val s = state.remainingSeconds % 60
+                    binding.tvTimerVal.text =
+                        String.format(Locale.getDefault(), "%02d:%02d", m, s)
+
+                    // ── Progress bars
+                    val progressValue = (state.progress * 10_000).toInt()
+                    binding.progressTimer.progress = progressValue
+                    binding.progressDock.progress  = progressValue
+
+                    // ── Sound labels (only when populated)
+                    if (state.soundTitle.isNotEmpty()) {
+                        binding.tvTrackTitle.text    = state.soundTitle
+                        binding.tvTrackSubtitle.text = state.soundSubtitle
                     }
-                )
-                finish()
-                fadeTransition()
+
+                    // ── Pause button icon
+                    binding.btnPause.setImageResource(
+                        if (state.isPaused) android.R.drawable.ic_media_play
+                        else android.R.drawable.ic_media_pause
+                    )
+
+                    // ── Animation state (only on change)
+                    if (prevIsPaused != state.isPaused) {
+                        if (state.isPaused) {
+                            binding.orbContainer.clearAnimation()
+                            stopEqualizerAnimation()
+                        } else {
+                            startBreathingAnimation()
+                            startEqualizerAnimation()
+                        }
+                        prevIsPaused = state.isPaused
+                    }
+                }
             }
-        }.start()
+        }
     }
 
-    private fun updateProgress() {
-        val minutes = (timeLeftInMillis / 1000).toInt() / 60
-        val seconds = (timeLeftInMillis / 1000).toInt() % 60
-        binding.tvTimerVal.text = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
-
-        val ratio = if (originalDurationMs > 0)
-            (timeLeftInMillis.toFloat() / originalDurationMs.toFloat()) else 0f
-
-        val progressValue = (ratio * 10000).toInt()
-        binding.progressTimer.progress = progressValue
-        binding.progressDock.progress = progressValue
+    private fun observeEvents() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.events.collect { event ->
+                    when (event) {
+                        is SessionEvent.NavigateToFinSession -> {
+                            startActivity(
+                                Intent(this@SessionImmersiveActivity, FinSessionActivity::class.java)
+                                    .putExtra("DURATION_MS", event.durationMs)
+                            )
+                            finish()
+                            fadeTransition()
+                        }
+                        SessionEvent.NavigateToHome -> {
+                            startActivity(
+                                Intent(this@SessionImmersiveActivity, HomeActivity::class.java).apply {
+                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                }
+                            )
+                            fadeTransition()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // ═══════════════════════════════════════
@@ -159,8 +155,8 @@ class SessionImmersiveActivity : AppCompatActivity() {
             Animation.RELATIVE_TO_SELF, 0.5f,
             Animation.RELATIVE_TO_SELF, 0.5f
         ).apply {
-            duration = 4000
-            repeatMode = Animation.REVERSE
+            duration    = 4000
+            repeatMode  = Animation.REVERSE
             repeatCount = Animation.INFINITE
             interpolator = AccelerateDecelerateInterpolator()
         }
@@ -183,33 +179,29 @@ class SessionImmersiveActivity : AppCompatActivity() {
         }
         AnimatorSet().apply { playTogether(scaleX, scaleY, alpha); start() }
 
-        val bgAlpha = ObjectAnimator.ofFloat(binding.viewBgGlow, "alpha", 0.25f, 0.12f).apply {
+        ObjectAnimator.ofFloat(binding.viewBgGlow, "alpha", 0.25f, 0.12f).apply {
             repeatMode = ValueAnimator.REVERSE; repeatCount = ValueAnimator.INFINITE; duration = 3000
             interpolator = AccelerateDecelerateInterpolator()
+            start()
         }
-        bgAlpha.start()
     }
-
-    private val equalizerAnimators = mutableListOf<ObjectAnimator>()
 
     private fun startEqualizerAnimation() {
         equalizerAnimators.clear()
-        val bars = listOf(
+        listOf(
             binding.eqBar1 to 380L,
             binding.eqBar2 to 600L,
             binding.eqBar3 to 340L,
             binding.eqBar4 to 700L,
             binding.eqBar5 to 430L,
-        )
-        bars.forEach { (bar, dur) ->
-            val anim = ObjectAnimator.ofFloat(bar, "scaleY", 1f, 3f).apply {
+        ).forEach { (bar, dur) ->
+            ObjectAnimator.ofFloat(bar, "scaleY", 1f, 3f).apply {
                 repeatMode = ValueAnimator.REVERSE
                 repeatCount = ValueAnimator.INFINITE
                 duration = dur
                 interpolator = AccelerateDecelerateInterpolator()
                 start()
-            }
-            equalizerAnimators.add(anim)
+            }.also { equalizerAnimators.add(it) }
         }
     }
 
@@ -222,8 +214,8 @@ class SessionImmersiveActivity : AppCompatActivity() {
         lifecycleScope.launch {
             var i = 0
             while (true) {
-                delay(8000)
-                if (!isPaused) {
+                delay(8_000L)
+                if (!viewModel.uiState.value.isPaused) {
                     i = (i + 1) % motivationalPhrases.size
                     binding.tvMotivational.animate().alpha(0f).setDuration(500).withEndAction {
                         binding.tvMotivational.text = motivationalPhrases[i]
@@ -235,83 +227,21 @@ class SessionImmersiveActivity : AppCompatActivity() {
     }
 
     // ═══════════════════════════════════════
-    // RADIO — ExoPlayer + Retrofit
-    // ═══════════════════════════════════════
-
-    private fun fetchAndPlayRadio() {
-        lifecycleScope.launch {
-            try {
-                // Retrofit call on IO dispatcher
-                val stations = withContext(Dispatchers.IO) {
-                    RetrofitClient.radioBrowserApi.searchStations(tag = "ambient", limit = 5)
-                }
-
-                if (stations.isNotEmpty()) {
-                    val station = stations.first()
-                    Timber.i("Radio station found: ${station.name} @ ${station.streamUrl}")
-                    binding.tvTrackTitle.text = station.name.trim()
-                    binding.tvTrackSubtitle.text = "${station.codec} · ${station.bitrate}kbps · En direct"
-                    playWithExoPlayer(station.streamUrl)
-                } else {
-                    setOfflineFallback()
-                }
-            } catch (e: Exception) {
-                Timber.e(e, "Failed to fetch radio station")
-                setOfflineFallback()
-            }
-        }
-    }
-
-    private fun playWithExoPlayer(streamUrl: String) {
-        exoPlayer = ExoPlayer.Builder(this).build().apply {
-            val mediaItem = MediaItem.fromUri(streamUrl)
-            setMediaItem(mediaItem)
-            prepare()
-            addListener(object : Player.Listener {
-                override fun onPlaybackStateChanged(playbackState: Int) {
-                    when (playbackState) {
-                        Player.STATE_BUFFERING -> Timber.d("ExoPlayer: buffering...")
-                        Player.STATE_READY -> {
-                            Timber.d("ExoPlayer: ready, starting playback")
-                            if (!isPaused) play()
-                        }
-                        Player.STATE_ENDED -> Timber.d("ExoPlayer: stream ended")
-                        Player.STATE_IDLE -> Timber.d("ExoPlayer: idle")
-                    }
-                }
-            })
-        }
-    }
-
-    private fun setOfflineFallback() {
-        binding.tvTrackTitle.text = "Playlist Relax"
-        binding.tvTrackSubtitle.text = "Hors-ligne"
-        Timber.w("Radio fallback: offline mode")
-    }
-
-    private fun releasePlayer() {
-        exoPlayer?.release()
-        exoPlayer = null
-    }
-
-    // ═══════════════════════════════════════
     // LIFECYCLE
     // ═══════════════════════════════════════
 
     override fun onPause() {
         super.onPause()
-        if (!isPaused) exoPlayer?.pause()
+        viewModel.onActivityPause()
     }
 
     override fun onResume() {
         super.onResume()
-        if (!isPaused) exoPlayer?.play()
+        viewModel.onActivityResume()
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-        countDownTimer?.cancel()
         stopEqualizerAnimation()
-        releasePlayer()
+        super.onDestroy()
     }
 }

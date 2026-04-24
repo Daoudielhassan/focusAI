@@ -1,11 +1,4 @@
 package com.focus.mob.data
-import com.focus.mob.R
-
-import com.focus.mob.ui.auth.*
-import com.focus.mob.ui.main.*
-import com.focus.mob.ui.onboarding.*
-import com.focus.mob.ui.session.*
-import com.focus.mob.utils.*
 
 import android.content.Context
 import androidx.room.Database

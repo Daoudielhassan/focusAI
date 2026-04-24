@@ -11,34 +11,29 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.focus.mob.R
 import com.focus.mob.databinding.ActivityHomeBinding
 import com.focus.mob.ui.session.PreSessionActivity
+import com.focus.mob.ui.viewmodel.HomeViewModel
 import com.focus.mob.utils.NavigationUtils
 import com.focus.mob.utils.fadeTransition
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
-    private var selectedDuration = 30
+    private val viewModel: HomeViewModel by viewModels()
 
     private val runningAnimators = mutableListOf<AnimatorSet>()
     private val runningObjectAnimators = mutableListOf<ObjectAnimator>()
-
-    private val quotes = listOf(
-        "\"La concentration est la racine de toute réussite.\"",
-        "\"Un seul objectif à la fois. Puis un autre.\"",
-        "\"Le flux commence quand on s'oublie soi-même.\"",
-        "\"Chaque session compte, même les plus courtes.\"",
-        "\"Soyez présent. Maintenant. Ici.\""
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,48 +43,122 @@ class HomeActivity : AppCompatActivity() {
 
         setupDurationSelection()
         setupCta()
+        observeUiState()
 
-        NavigationUtils.setupBottomNavigation(
-            this,
-            NavigationUtils.Tab.HOME
-        )
+        NavigationUtils.setupBottomNavigation(this, NavigationUtils.Tab.HOME)
 
         startEntranceAnimations()
         startOrbPulse()
         startEqualizerAnimation()
-        rotateQuotes()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.refresh()
+    }
+
+    // ═══════════════════════════════════════
+    // STATE OBSERVATION
+    // ═══════════════════════════════════════
+
+    private fun observeUiState() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                var isFirstEmission = true
+                var lastQuote = ""
+                viewModel.uiState.collect { state ->
+                    updateSelectionUi(state.selectedDuration, animate = !isFirstEmission)
+                    isFirstEmission = false
+
+                    if (lastQuote.isNotEmpty() && state.currentQuote != lastQuote) {
+                        animateQuoteChange(state.currentQuote)
+                    } else {
+                        binding.tvQuote.text = state.currentQuote
+                    }
+                    lastQuote = state.currentQuote
+
+                    // ── Stats ──────────────────────────────────────────────────────────
+                    binding.tvStreakCount.text   = state.streakDays.toString()
+                    binding.tvTodayTime.text     = formatTodayTime(state.todayFocusMinutes)
+                    binding.tvTodaySessions.text = state.todaySessions.toString()
+
+                    // ── Lumina card ───────────────────────────────────────────────
+                    binding.tvLuminaScore.text = "${state.focusScore}%"
+                    binding.tvLuminaReco.text  = "${state.recommendedDuration} min · " +
+                        state.recommendedSoundCategory.replaceFirstChar { it.uppercase() }
+                    binding.tvAiTip.text       = state.aiTip
+                }
+            }
+        }
+    }
+
+    // ═══════════════════════════════════════
+    // SETUP
+    // ═══════════════════════════════════════
+
     private fun setupDurationSelection() {
-        binding.tvDuration15.setOnClickListener {
-            updateSelection(15)
-        }
-
-        binding.tvDuration30.setOnClickListener {
-            updateSelection(30)
-        }
-
-        binding.tvDuration60.setOnClickListener {
-            updateSelection(60)
-        }
-
-        updateSelection(30, animate = false)
+        binding.tvDuration15.setOnClickListener { viewModel.selectDuration(15) }
+        binding.tvDuration30.setOnClickListener { viewModel.selectDuration(30) }
+        binding.tvDuration60.setOnClickListener { viewModel.selectDuration(60) }
     }
 
     private fun setupCta() {
         binding.btnCommencer.setOnClickListener { button ->
             animatePress(button)
-
             button.postDelayed({
                 val intent = Intent(this, PreSessionActivity::class.java).apply {
-                    putExtra("selected_duration", selectedDuration)
+                    putExtra("selected_duration", viewModel.uiState.value.selectedDuration)
                 }
-
                 startActivity(intent)
                 fadeTransition()
             }, 180)
         }
     }
+
+    // ═══════════════════════════════════════
+    // UI UPDATES
+    // ═══════════════════════════════════════
+
+    private fun updateSelectionUi(duration: Int, animate: Boolean = true) {
+        val allDurations = listOf(
+            binding.tvDuration15,
+            binding.tvDuration30,
+            binding.tvDuration60
+        )
+
+        allDurations.forEach { item ->
+            item.setBackgroundResource(R.drawable.bg_duration_chip_inactive)
+            item.setTextColor(ContextCompat.getColor(this, R.color.text_secondary_dark))
+            item.typeface = Typeface.DEFAULT
+        }
+
+        val selectedView = when (duration) {
+            15 -> binding.tvDuration15
+            60 -> binding.tvDuration60
+            else -> binding.tvDuration30
+        }
+
+        selectedView.setBackgroundResource(R.drawable.bg_duration_chip_active)
+        selectedView.setTextColor(ContextCompat.getColor(this, R.color.background_dark))
+        selectedView.typeface = Typeface.DEFAULT_BOLD
+
+        if (animate) animateSelection(selectedView)
+    }
+
+    private fun animateQuoteChange(newQuote: String) {
+        binding.tvQuote.animate()
+            .alpha(0f)
+            .setDuration(360L)
+            .withEndAction {
+                binding.tvQuote.text = newQuote
+                binding.tvQuote.animate().alpha(1f).setDuration(360L).start()
+            }
+            .start()
+    }
+
+    // ═══════════════════════════════════════
+    // ANIMATIONS
+    // ═══════════════════════════════════════
 
     private fun startEntranceAnimations() {
         val animatedViews = listOf(
@@ -191,61 +260,6 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun rotateQuotes() {
-        lifecycleScope.launch {
-            var index = 0
-
-            while (true) {
-                delay(6000L)
-
-                index = (index + 1) % quotes.size
-
-                binding.tvQuote.animate()
-                    .alpha(0f)
-                    .setDuration(360L)
-                    .withEndAction {
-                        binding.tvQuote.text = quotes[index]
-
-                        binding.tvQuote.animate()
-                            .alpha(1f)
-                            .setDuration(360L)
-                            .start()
-                    }
-                    .start()
-            }
-        }
-    }
-
-    private fun updateSelection(duration: Int, animate: Boolean = true) {
-        selectedDuration = duration
-
-        val allDurations = listOf(
-            binding.tvDuration15,
-            binding.tvDuration30,
-            binding.tvDuration60
-        )
-
-        allDurations.forEach { item ->
-            item.setBackgroundResource(R.drawable.bg_duration_chip_inactive)
-            item.setTextColor(ContextCompat.getColor(this, R.color.text_secondary_dark))
-            item.typeface = Typeface.DEFAULT
-        }
-
-        val selectedView = when (duration) {
-            15 -> binding.tvDuration15
-            60 -> binding.tvDuration60
-            else -> binding.tvDuration30
-        }
-
-        selectedView.setBackgroundResource(R.drawable.bg_duration_chip_active)
-        selectedView.setTextColor(ContextCompat.getColor(this, R.color.background_dark))
-        selectedView.typeface = Typeface.DEFAULT_BOLD
-
-        if (animate) {
-            animateSelection(selectedView)
-        }
-    }
-
     private fun animateSelection(view: TextView) {
         val scaleX = ObjectAnimator.ofFloat(view, View.SCALE_X, 1f, 1.08f, 1f)
         val scaleY = ObjectAnimator.ofFloat(view, View.SCALE_Y, 1f, 1.08f, 1f)
@@ -268,6 +282,12 @@ class HomeActivity : AppCompatActivity() {
             interpolator = OvershootInterpolator()
             start()
         }
+    }
+
+    private fun formatTodayTime(minutes: Int): String {
+        val h = minutes / 60
+        val m = minutes % 60
+        return "${h}h ${m.toString().padStart(2, '0')}"
     }
 
     override fun onDestroy() {

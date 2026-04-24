@@ -16,6 +16,7 @@ import com.focus.mob.data.repository.AuthRepository
 import com.focus.mob.data.repository.SessionRepository
 import com.focus.mob.databinding.ActivityFinSessionBinding
 import com.focus.mob.ui.viewmodel.SessionViewModel
+import com.focus.mob.utils.NotificationHelper
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,6 +34,8 @@ class FinSessionActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         sessionDurationMs = intent.getLongExtra("DURATION_MS", 25 * 60 * 1000L)
+
+        sessionViewModel.loadStats()
 
         binding.btnEmoji1.setOnClickListener { selectEmoji(it as android.widget.FrameLayout, "Bad") }
         binding.btnEmoji2.setOnClickListener { selectEmoji(it as android.widget.FrameLayout, "Neutral") }
@@ -67,6 +70,17 @@ class FinSessionActivity : AppCompatActivity() {
 
     private fun saveSessionToDb() {
         val minutes = (sessionDurationMs / (1000 * 60)).toInt()
+        checkAndNotifyGoal(minutes)
         sessionViewModel.saveSession(minutes, selectedMood)
+    }
+
+    private fun checkAndNotifyGoal(newMinutes: Int) {
+        val prefs = getSharedPreferences("LuminaPrefs", MODE_PRIVATE)
+        val goalHours = prefs.getInt("daily_goal", 3) + 1
+        val goalMinutes = goalHours * 60
+        val todayBefore = sessionViewModel.todayMinutes.value
+        if (todayBefore < goalMinutes && todayBefore + newMinutes >= goalMinutes) {
+            NotificationHelper.sendDailyGoalReachedNotification(this, goalHours)
+        }
     }
 }

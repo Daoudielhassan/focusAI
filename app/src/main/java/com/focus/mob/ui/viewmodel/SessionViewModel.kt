@@ -26,6 +26,9 @@ class SessionViewModel @Inject constructor(private val repository: SessionReposi
     private val _sessionCount = MutableStateFlow(0)
     val sessionCount: StateFlow<Int> = _sessionCount.asStateFlow()
 
+    private val _todayMinutes = MutableStateFlow(0)
+    val todayMinutes: StateFlow<Int> = _todayMinutes.asStateFlow()
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
@@ -38,7 +41,8 @@ class SessionViewModel @Inject constructor(private val repository: SessionReposi
                 val all = repository.getAllSessions()
                 _sessions.value = all
                 _sessionCount.value = all.size
-                Timber.d("Stats loaded: ${all.size} sessions, ${_totalMinutes.value}min total")
+                _todayMinutes.value = repository.getTodayFocusTime(getStartOfDayMillis())
+                Timber.d("Stats loaded: ${all.size} sessions, ${_totalMinutes.value}min total, ${_todayMinutes.value}min today")
             } catch (e: Exception) {
                 Timber.e(e, "Failed to load stats")
             } finally {
