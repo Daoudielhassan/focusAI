@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".FocusApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -12,10 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FocusAI">
         <activity
-            android:name=".MainActivity"
-            android:exported="true" />
-        <activity
-            android:name=".WelcomeActivity"
+            android:name=".ui.auth.WelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,34 +23,40 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ObjectifPrincipalActivity"
+            android:name=".ui.auth.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".NiveauDistractionActivity"
+            android:name=".ui.auth.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".AutorisationsActivity"
+            android:name=".ui.onboarding.ObjectifPrincipalActivity"
             android:exported="false" />
         <activity
-            android:name=".PreSessionActivity"
+            android:name=".ui.onboarding.NiveauDistractionActivity"
             android:exported="false" />
         <activity
-            android:name=".SessionImmersiveActivity"
+            android:name=".ui.onboarding.AutorisationsActivity"
             android:exported="false" />
         <activity
-            android:name=".FinSessionActivity"
+            android:name=".ui.session.PreSessionActivity"
             android:exported="false" />
         <activity
-            android:name=".StatsActivity"
+            android:name=".ui.session.SessionImmersiveActivity"
             android:exported="false" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".ui.session.FinSessionActivity"
             android:exported="false" />
         <activity
-            android:name=".InsightsIaActivity"
+            android:name=".ui.main.StatsActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".ui.main.HomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.main.InsightsIaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.main.SettingsActivity"
             android:exported="false" />
     </application>
 

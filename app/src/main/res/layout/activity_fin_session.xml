@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_dark"
-    tools:context=".FinSessionActivity">
+    tools:context=".ui.session.FinSessionActivity">
 
     <!-- Ambient Glow / Background Gradient -->
     <View

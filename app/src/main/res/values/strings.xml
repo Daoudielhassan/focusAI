@@ -28,4 +28,20 @@
     <string name="home_duration_30">30 min</string>
     <string name="home_duration_60">60 min</string>
     <string name="home_btn_commencer">Commencer une session</string>
+
+    <!-- Auth / Login / SignUp -->
+    <string name="auth_error_empty_fields">Veuillez remplir tous les champs</string>
+    <string name="auth_error_password_length">Le mot de passe doit contenir au moins 6 caractères</string>
+    <string name="auth_error_password_match">Les mots de passe ne correspondent pas</string>
+    <string name="auth_error_google_not_configured">Google Sign-In non configuré (Client ID manquant)</string>
+    <string name="auth_error_google_failed">Échec de la connexion Google</string>
+    <string name="auth_error_google_signup_failed">Échec de l\'inscription Google</string>
+    <string name="auth_error_firebase">Erreur: %1$s</string>
+    <string name="auth_error_firebase_google">Erreur Firebase: %1$s</string>
+    <string name="auth_reset_email_sent">Email de réinitialisation envoyé</string>
+    <string name="auth_error_reset_empty_email">Veuillez entrer votre email d\'abord</string>
+
+    <!-- Settings -->
+    <string name="settings_reset_success">AI Data &amp; History Reset</string>
+
 </resources>
